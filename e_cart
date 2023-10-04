@@ -1,0 +1,106 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+//strcture product
+typedef struct 
+{
+    char name[100];
+    double price;
+    int available;
+} Product;
+// CartItem structure
+typedef struct 
+{
+    Product product;
+    int quantity;
+} CartItem;
+// Function to display a list of products
+void displayProducts(Product products[], int numProducts) 
+{
+    printf("Available Products:\n");
+    for (int i = 0; i < numProducts; i++) 
+    {
+        printf("%d.name: %s ,price : %.2f, availabe:%s\n", i + 1, products[i].name, products[i].price,
+               products[i].available ? "true" : "false");
+    }
+}
+
+// Function to add a product to the cart
+void addToCart(CartItem cart[], Product product, int quantity, int* cartSize) 
+{
+    cart[*cartSize].product = product;
+    cart[*cartSize].quantity = quantity;
+    (*cartSize)++;
+}
+
+// Function to calculate the total bill
+double calculateTotal(CartItem cart[], int cartSize)
+{
+    double total = 0.0;
+    for (int i = 0; i < cartSize; i++) 
+    {
+        total += cart[i].product.price * cart[i].quantity;
+    }
+    return total;
+}
+
+int main() 
+{
+    // Initialize products and cart
+    int n;
+    scanf("%d",&n);
+    Product products[n];
+    for (int i = 0; i < n; i++) {
+        printf("Enter details for Product %d:\n", i + 1);
+        printf("Name: ");
+        scanf("%s",products[i].name);
+        printf("Price: $");
+        scanf("%lf", &products[i].price);
+        printf("available: ");
+        scanf("%d", &products[i].available);
+    }
+
+    CartItem cart[100];
+    int cartSize = 0, choice, quantity;
+     displayProducts(products, n);
+    do 
+    {
+        printf("Enter your choice (0 to exit):\n");
+        scanf("%d", &choice);
+
+        if (choice == 0) {
+            break;
+        } 
+        else if (choice >= 1 && choice <= n) 
+        {
+            printf("Enter quantity:\n");
+            scanf("%d", &quantity);
+            if (products[choice - 1].available) 
+            {
+                addToCart(cart, products[choice - 1], quantity, &cartSize);
+                printf("Product added to the cart.\n");
+            }
+            }
+        else
+        {
+            printf("Invalid choice.\n");
+        }
+    } while (1);
+
+    // Display cart items and total bill
+    printf("Cart Items: You have ");
+    for (int i = 0; i < cartSize; i++) 
+    {
+        printf("%d %s", cart[i].quantity, cart[i].product.name);
+        if (i < cartSize - 1) 
+        {
+            printf(" and ");
+        }
+    }
+    printf(" in your cart.\n");
+
+    double total = calculateTotal(cart, cartSize);
+    printf("Total Bill: Your total bill is $%.2f.\n", total);
+
+    return 0;
+}
